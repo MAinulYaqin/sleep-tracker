@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Nap App</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="clear">clear</string>
+</resources>
