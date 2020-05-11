@@ -31,7 +31,7 @@
             android:text="@string/start"
             app:layout_constraintBaseline_toBaselineOf="@id/stopButton"
             app:layout_constraintEnd_toStartOf="@+id/stopButton"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button

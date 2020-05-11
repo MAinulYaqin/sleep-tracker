@@ -5,6 +5,6 @@
 
     <fragment
         android:id="@+id/titleFragment"
-        android:name="com.gabutproject.napapp.title.TitleFragment"
+        android:name="com.gabutproject.napapp.sleeptracker.SleepTrackerFragment"
         android:label="TitleFragment" />
 </navigation>
