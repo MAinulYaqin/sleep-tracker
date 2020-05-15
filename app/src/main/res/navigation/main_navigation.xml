@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigation"
-    app:startDestination="@id/titleFragment">
+    app:startDestination="@id/sleepTrackerFragment">
 
     <fragment
-        android:id="@+id/titleFragment"
+        android:id="@+id/sleepTrackerFragment"
         android:name="com.gabutproject.napapp.sleeptracker.SleepTrackerFragment"
-        android:label="TitleFragment" />
+        android:label="sleepTrackerFragment" >
+        <action
+            android:id="@+id/action_sleepTrackerFragment_to_sleepQualityFragment"
+            app:destination="@id/sleepQualityFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/sleepQualityFragment"
+        android:name="com.gabutproject.napapp.sleepquality.SleepQualityFragment"
+        android:label="SleepQualityFragment" >
+        <action
+            android:id="@+id/action_sleepQualityFragment_to_sleepTrackerFragment"
+            app:destination="@id/sleepTrackerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 </navigation>
