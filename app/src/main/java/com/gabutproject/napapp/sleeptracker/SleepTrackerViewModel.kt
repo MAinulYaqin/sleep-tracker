@@ -1,7 +1,7 @@
 package com.gabutproject.napapp.sleeptracker
 
 import android.app.Application
-import android.os.SystemClock
+import android.text.Spanned
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +11,12 @@ import com.gabutproject.napapp.database.SleepNight
 import com.gabutproject.napapp.formatNights
 import kotlinx.coroutines.*
 
+
 class SleepTrackerViewModel(private val database: SleepDatabaseDao, application: Application) :
     AndroidViewModel(application) {
+
+    private val _onNavigateToSleepQuality = MutableLiveData<SleepNight>()
+    val onNavigateToSleepQuality: LiveData<SleepNight> get() = _onNavigateToSleepQuality
 
     private var viewModelJob = Job()
 
@@ -29,7 +33,7 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
 
     private val nights = database.getAllNights()
 
-    var nightsString = Transformations.map(nights) {
+    var nightsString: LiveData<Spanned>? = Transformations.map(nights) {
         formatNights(it, application.resources)
     }
 
@@ -60,7 +64,7 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
 
     fun onStartTicking() {
         uiScope.launch {
-            var newNight = SleepNight()
+            val newNight = SleepNight()
 
             insert(newNight)
 
@@ -79,6 +83,9 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
             // null check, and set endTime to current Time
             val oldNight = _tonight.value ?: return@launch
             oldNight.endTimeMillis = System.currentTimeMillis()
+
+            // update liveData
+            _onNavigateToSleepQuality.value = oldNight
 
             update(oldNight) // update database
         }
@@ -101,5 +108,9 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
         withContext(Dispatchers.IO) {
             database.clear()
         }
+    }
+
+    fun onNavigateCompleted() {
+        _tonight.value = null
     }
 }

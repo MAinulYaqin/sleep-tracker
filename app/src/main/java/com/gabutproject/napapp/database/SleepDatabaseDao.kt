@@ -1,38 +1,33 @@
 package com.gabutproject.napapp.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
+
 
 @Dao
 interface SleepDatabaseDao {
+    // 1. we need insert data to SleepDatabse
     @Insert
     fun insert(night: SleepNight)
 
+    // 2. after user push the start and data created, the data need to be updated
+    //    later to change end endTimeMillis
     @Update
     fun update(night: SleepNight)
 
-    // manual query, because there's no convenience annotation
-    // for the remaining functions
-
-    // get single item from list
+    // 3. we need to get specific item to update based on key
     @Query("SELECT * FROM daily_sleep_quality_table WHERE nightId = :key")
     fun get(key: Long): SleepNight?
 
-    // delete all entries inside
-    // didn't use @Delete from room, it's effective to deletes specific
-    // but not efficient for clearing entries
+    // 4. user can push clearButton to clear data from database
     @Query("DELETE FROM daily_sleep_quality_table")
     fun clear()
 
-    // Select the latest items from database,
-    // and add LIMIT 1 so it will return 1 item
+    // 5. grep the latest data, in summary, tonight
     @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC LIMIT 1")
-    fun getTonight(): SleepNight?
+    fun getTonight(): SleepNight? // put null check, there's case when data is not stored yet
 
-    // Grab all items from database
-    @Query("SELECT * FROM daily_sleep_quality_table ORDER BY nightId DESC")
+    // 6. we need to get all nights / get data to show to the list
+    @Query("SELECT * FROM daily_sleep_quality_table")
     fun getAllNights(): LiveData<List<SleepNight>>
 }
