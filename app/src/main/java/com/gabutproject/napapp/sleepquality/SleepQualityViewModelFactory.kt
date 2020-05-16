@@ -2,7 +2,6 @@ package com.gabutproject.napapp.sleepquality
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.gabutproject.napapp.SleepQualityViewModel
 import com.gabutproject.napapp.database.SleepDatabaseDao
 import java.lang.IllegalArgumentException
 
