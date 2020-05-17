@@ -41,6 +41,19 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
         initializeNights()
     }
 
+    // THESE 3 VALUES IS FOR UPDATING BUTTON'S STATE
+    val startButtonVisible: LiveData<Boolean> = Transformations.map(_tonight) {
+        it == null
+    }
+
+    val stopButtonVisible: LiveData<Boolean> = Transformations.map(_tonight) {
+        it != null
+    }
+
+    val clearButtonVisible: LiveData<Boolean> = Transformations.map(nights) {
+        it.isNotEmpty()
+    }
+
     private fun initializeNights() {
         uiScope.launch {
             _tonight.value = getTonightFromDatabase()
