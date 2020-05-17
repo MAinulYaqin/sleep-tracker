@@ -29,16 +29,22 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
     // so we need the Coroutine to run in the Main thread
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    // the newest data from table
     private var _tonight = MutableLiveData<SleepNight?>()
 
     private val nights = database.getAllNights()
 
+    // returns formatted string to show in the list
     var nightsString: LiveData<Spanned>? = Transformations.map(nights) {
         formatNights(it, application.resources)
     }
 
-    init {
-        initializeNights()
+    private var _showSnackBar = MutableLiveData<Boolean>()
+    val showSnackBar: LiveData<Boolean> get() = _showSnackBar
+
+    fun onShowSnackBarCompleted() {
+        // to prevent snackBar from stuck on the screen
+        _showSnackBar.value = false
     }
 
     // THESE 3 VALUES IS FOR UPDATING BUTTON'S STATE
@@ -52,6 +58,10 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
 
     val clearButtonVisible: LiveData<Boolean> = Transformations.map(nights) {
         it.isNotEmpty()
+    }
+
+    init {
+        initializeNights()
     }
 
     private fun initializeNights() {
@@ -113,7 +123,9 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
     fun onClear() {
         uiScope.launch {
             clear()
+
             _tonight.value = null
+            _showSnackBar.value = true
         }
     }
 
