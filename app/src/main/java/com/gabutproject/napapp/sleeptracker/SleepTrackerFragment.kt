@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.gabutproject.napapp.R
 import com.gabutproject.napapp.database.SleepDatabase
 import com.gabutproject.napapp.databinding.FragmentSleepTrackerBinding
+import com.google.android.material.snackbar.Snackbar
 
 class SleepTrackerFragment : Fragment() {
 
@@ -57,6 +58,18 @@ class SleepTrackerFragment : Fragment() {
                     )
                 )
                 viewModel.onNavigateCompleted()
+            }
+        })
+
+        // to show snackBar
+        viewModel.showSnackBar.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.cleared_message),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                viewModel.onShowSnackBarCompleted()
             }
         })
     }
