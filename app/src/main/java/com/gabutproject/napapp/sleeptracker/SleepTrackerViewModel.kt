@@ -32,7 +32,7 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
     // the newest data from table
     private var _tonight = MutableLiveData<SleepNight?>()
 
-    private val nights = database.getAllNights()
+    val nights = database.getAllNights()
 
     // returns formatted string to show in the list
     var nightsString: LiveData<Spanned>? = Transformations.map(nights) {

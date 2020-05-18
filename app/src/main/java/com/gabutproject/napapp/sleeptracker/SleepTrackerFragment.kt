@@ -17,8 +17,8 @@ import com.google.android.material.snackbar.Snackbar
 class SleepTrackerFragment : Fragment() {
 
     private lateinit var binding: FragmentSleepTrackerBinding
-
     private lateinit var viewModel: SleepTrackerViewModel
+    private lateinit var adapter: SleepNightAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,13 +41,16 @@ class SleepTrackerFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        adapter = SleepNightAdapter()
+
+        binding.sleepList.adapter = adapter
+
         updateLiveData()
 
         return binding.root
     }
 
     private fun updateLiveData() {
-
         // to navigate
         viewModel.onNavigateToSleepQuality.observe(viewLifecycleOwner, Observer { night ->
             // if the value is already updated, then navigate
@@ -63,13 +66,22 @@ class SleepTrackerFragment : Fragment() {
 
         // to show snackBar
         viewModel.showSnackBar.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
+            if (it) {
                 Snackbar.make(
                     requireActivity().findViewById(android.R.id.content),
                     getString(R.string.cleared_message),
                     Snackbar.LENGTH_SHORT
                 ).show()
                 viewModel.onShowSnackBarCompleted()
+            }
+        })
+
+        // to update the list of data to show in RecyclerView
+        // when the item update, it will re-draw the whole list
+        // TODO: this code will be updated in the next future due to performance issue
+        viewModel.nights.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.data = it
             }
         })
     }
