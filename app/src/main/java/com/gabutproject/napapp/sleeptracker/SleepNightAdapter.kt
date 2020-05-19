@@ -1,17 +1,12 @@
 package com.gabutproject.napapp.sleeptracker
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.gabutproject.napapp.R
-import com.gabutproject.napapp.convertDurationToFormatted
-import com.gabutproject.napapp.convertNumericQualityToString
 import com.gabutproject.napapp.database.SleepNight
+import com.gabutproject.napapp.databinding.ListItemSleepNightBinding
 
 class SleepNightAdapter :
     ListAdapter<SleepNight, SleepNightAdapter.ViewHolder>(SleepNightDiffCallback()) {
@@ -31,41 +26,23 @@ class SleepNightAdapter :
 
     // this subClass holds item's resources such as the Text or imageView.
     // simply calling, a template of each item
-    class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val sleepLength: TextView = itemView.findViewById(R.id.sleep_length)
-        private val qualityImage: ImageView = itemView.findViewById(R.id.quality_image)
-        private val qualityText: TextView = itemView.findViewById(R.id.quality_text)
+    class ViewHolder private constructor(val binding: ListItemSleepNightBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.list_item_sleep_night, parent, false)
+                val binding =
+                    ListItemSleepNightBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(view)
+                return ViewHolder(binding)
             }
         }
 
         // this function used for set the item's data such as sleep quality, etc.
         fun bind(item: SleepNight) {
-            val res = itemView.context.resources
-
-            // sleep duration
-            sleepLength.text =
-                convertDurationToFormatted(item.startTimeMillis, item.endTimeMillis, res)
-            // sleep quality
-            qualityText.text = convertNumericQualityToString(item.sleepQuality, res)
-            // sleep quality image
-            qualityImage.setImageResource(
-                when (item.sleepQuality) {
-                    0 -> R.drawable.ic_sleep_0
-                    1 -> R.drawable.ic_sleep_1
-                    2 -> R.drawable.ic_sleep_2
-                    3 -> R.drawable.ic_sleep_3
-                    4 -> R.drawable.ic_sleep_4
-                    5 -> R.drawable.ic_sleep_5
-                    else -> R.drawable.ic_sleep_active
-                }
-            )
+            binding.sleep = item
+            binding.executePendingBindings()
         }
     }
 
