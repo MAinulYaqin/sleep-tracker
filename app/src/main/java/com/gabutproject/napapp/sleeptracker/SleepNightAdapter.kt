@@ -26,7 +26,7 @@ class SleepNightAdapter :
 
     // this subClass holds item's resources such as the Text or imageView.
     // simply calling, a template of each item
-    class ViewHolder private constructor(val binding: ListItemSleepNightBinding) :
+    class ViewHolder private constructor(private val binding: ListItemSleepNightBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         companion object {
