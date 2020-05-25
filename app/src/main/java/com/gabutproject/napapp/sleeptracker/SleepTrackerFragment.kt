@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -47,9 +48,11 @@ class SleepTrackerFragment : Fragment() {
         // we use gridLayout to make it looks gallery picker
         val layoutManager = GridLayoutManager(activity, 3)
         binding.sleepList.layoutManager = layoutManager
-
-        adapter = SleepNightAdapter()
-
+        // define the adapter
+        adapter = SleepNightAdapter(SleepNightListener { nightId: Long ->
+            Toast.makeText(context, nightId.toString(), Toast.LENGTH_SHORT).show()
+        })
+        // binding the list to adapter
         binding.sleepList.adapter = adapter
 
         updateLiveData()
