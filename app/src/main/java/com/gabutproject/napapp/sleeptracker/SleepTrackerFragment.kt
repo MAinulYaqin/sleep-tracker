@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.gabutproject.napapp.R
 import com.gabutproject.napapp.database.SleepDatabase
 import com.gabutproject.napapp.databinding.FragmentSleepTrackerBinding
@@ -40,6 +41,12 @@ class SleepTrackerFragment : Fragment() {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+
+        // adding layout manager, to configure the layout
+        // we use gridLayout to make it looks gallery picker
+        val layoutManager = GridLayoutManager(activity, 3)
+        binding.sleepList.layoutManager = layoutManager
 
         adapter = SleepNightAdapter()
 
@@ -77,8 +84,6 @@ class SleepTrackerFragment : Fragment() {
         })
 
         // to update the list of data to show in RecyclerView
-        // when the item update, it will re-draw the whole list
-        // TODO: this code will be updated in the next future due to performance issue
         viewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
