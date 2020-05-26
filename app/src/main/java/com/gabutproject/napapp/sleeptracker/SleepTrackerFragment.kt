@@ -89,7 +89,7 @@ class SleepTrackerFragment : Fragment() {
         // to update the list of data to show in RecyclerView
         viewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
+                adapter.addHeaderAndSubmitList(it)
             }
         })
     }
