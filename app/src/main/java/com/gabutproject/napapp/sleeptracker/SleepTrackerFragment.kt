@@ -47,6 +47,15 @@ class SleepTrackerFragment : Fragment() {
         // adding layout manager, to configure the layout
         // we use gridLayout to make it looks gallery picker
         val layoutManager = GridLayoutManager(activity, 3)
+
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = when (position) {
+                0 -> 3
+                else -> 1
+            }
+
+        }
+
         binding.sleepList.layoutManager = layoutManager
 
         // define the adapter
