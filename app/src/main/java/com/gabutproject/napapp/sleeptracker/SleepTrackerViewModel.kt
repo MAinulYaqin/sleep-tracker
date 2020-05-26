@@ -85,6 +85,7 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
         }
     }
 
+    // start timer method
     fun onStartTicking() {
         uiScope.launch {
             val newNight = SleepNight()
@@ -138,4 +139,16 @@ class SleepTrackerViewModel(private val database: SleepDatabaseDao, application:
     fun onNavigateCompleted() {
         _tonight.value = null
     }
+
+    private val _onNavigateToSleepDetail = MutableLiveData<Long?>()
+    val onNavigateToSleepDetail: LiveData<Long?> get() = _onNavigateToSleepDetail
+
+    fun onItemClicked(key: Long) {
+        _onNavigateToSleepDetail.value = key
+    }
+
+    fun onSleepTrackerNavigated() {
+        _onNavigateToSleepDetail.value = null
+    }
+
 }

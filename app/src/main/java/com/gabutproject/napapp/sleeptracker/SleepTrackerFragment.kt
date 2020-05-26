@@ -48,10 +48,12 @@ class SleepTrackerFragment : Fragment() {
         // we use gridLayout to make it looks gallery picker
         val layoutManager = GridLayoutManager(activity, 3)
         binding.sleepList.layoutManager = layoutManager
+
         // define the adapter
         adapter = SleepNightAdapter(SleepNightListener { nightId: Long ->
-            Toast.makeText(context, nightId.toString(), Toast.LENGTH_SHORT).show()
+            viewModel.onItemClicked(nightId)
         })
+
         // binding the list to adapter
         binding.sleepList.adapter = adapter
 
@@ -83,6 +85,17 @@ class SleepTrackerFragment : Fragment() {
                     Snackbar.LENGTH_SHORT
                 ).show()
                 viewModel.onShowSnackBarCompleted()
+            }
+        })
+
+        viewModel.onNavigateToSleepDetail.observe(viewLifecycleOwner, Observer { key ->
+            key?.let {
+                this.findNavController().navigate(
+                    SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
+                        key
+                    )
+                )
+                viewModel.onSleepTrackerNavigated()
             }
         })
 
