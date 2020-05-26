@@ -47,11 +47,22 @@ class SleepTrackerFragment : Fragment() {
         // adding layout manager, to configure the layout
         // we use gridLayout to make it looks gallery picker
         val layoutManager = GridLayoutManager(activity, 3)
+
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = when (position) {
+                0 -> 3
+                else -> 1
+            }
+
+        }
+
         binding.sleepList.layoutManager = layoutManager
+
         // define the adapter
         adapter = SleepNightAdapter(SleepNightListener { nightId: Long ->
-            Toast.makeText(context, nightId.toString(), Toast.LENGTH_SHORT).show()
+            viewModel.onItemClicked(nightId)
         })
+
         // binding the list to adapter
         binding.sleepList.adapter = adapter
 
@@ -86,10 +97,21 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
+        viewModel.onNavigateToSleepDetail.observe(viewLifecycleOwner, Observer { key ->
+            key?.let {
+                this.findNavController().navigate(
+                    SleepTrackerFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
+                        key
+                    )
+                )
+                viewModel.onSleepTrackerNavigated()
+            }
+        })
+
         // to update the list of data to show in RecyclerView
         viewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
+                adapter.addHeaderAndSubmitList(it)
             }
         })
     }

@@ -1,22 +1,26 @@
 package com.gabutproject.napapp.sleeptracker
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.gabutproject.napapp.R
 import com.gabutproject.napapp.database.SleepNight
 import com.gabutproject.napapp.databinding.ListItemSleepNightBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.ClassCastException
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
 
 class SleepNightAdapter(private val clickListener: SleepNightListener) :
-    ListAdapter<SleepNight, RecyclerView.ViewHolder>(SleepNightDiffCallback()) {
+    ListAdapter<DataItem, RecyclerView.ViewHolder>(SleepNightDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -44,6 +48,10 @@ class SleepNightAdapter(private val clickListener: SleepNightListener) :
                 null -> listOf(DataItem.Header)
                 else -> listOf(DataItem.Header) + list.map { DataItem.SleepNightItem(it) }
             }
+
+            withContext(Dispatchers.Main) {
+                submitList(items)
+            }
         }
     }
 
@@ -54,6 +62,17 @@ class SleepNightAdapter(private val clickListener: SleepNightListener) :
             ITEM_VIEW_TYPE_HEADER -> TextViewHolder.from(parent)
             ITEM_VIEW_TYPE_ITEM -> ViewHolder.from(parent)
             else -> throw ClassCastException("Unknown viewType $viewType")
+        }
+    }
+
+    class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent: ViewGroup): TextViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.header, parent, false)
+
+                return TextViewHolder(view)
+            }
         }
     }
 
@@ -92,6 +111,7 @@ class SleepNightDiffCallback : DiffUtil.ItemCallback<DataItem>() {
         return oldItem.id == newItem.id
     }
 
+    @SuppressLint("Content value are Equals")
     override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
         // check if the newContent and the oldContent are the same or not
         return oldItem == newItem

@@ -30,4 +30,8 @@ interface SleepDatabaseDao {
     // 6. we need to get all nights / get data to show to the list
     @Query("SELECT * FROM daily_sleep_quality_table")
     fun getAllNights(): LiveData<List<SleepNight>>
+
+    // 7. get item by id, and returning liveData to observe
+    @Query("SELECT * FROM daily_sleep_quality_table WHERE nightId = :key")
+    fun getNightById(key: Long): LiveData<SleepNight>
 }
